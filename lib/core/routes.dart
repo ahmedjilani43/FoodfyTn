@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../models/restaurant.dart';
 import '../screens/discovery/discovery_screen.dart';
 import '../screens/details/restaurant_details_screen.dart';
 import '../screens/search/search_screen.dart';

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../services/api_service.dart'; 
 import '../../models/restaurant.dart'; 
  
@@ -28,6 +27,7 @@ class _SearchScreenState extends State<SearchScreen> {
       });
     } catch (e) {
      
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Error fetching data: $e")),
       );
@@ -108,7 +108,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                         ),
                                         const SizedBox(height: 4),
                                         Text(
-                                          restaurant.location ?? '',
+                                          restaurant.location,
                                           style: const TextStyle(fontSize: 12, color: Colors.grey),
                                         ),
                                       ],
