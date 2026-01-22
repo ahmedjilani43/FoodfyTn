@@ -27,10 +27,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
             const SizedBox(height: 30),
             
             // Profile Header
-            Center(
+            const Center(
               child: Column(
                 children: [
-                  const CircleAvatar(
+                  CircleAvatar(
                     radius: 60,
                     backgroundColor: Colors.blueGrey, 
                     child: FaIcon(
@@ -39,8 +39,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       color: Colors.white,
                     ),
                   ),
-                  const SizedBox(height: 15),
-                  const Text(
+                  SizedBox(height: 15),
+                  Text(
                     "Hanine Hammami", 
                     style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                   ),
