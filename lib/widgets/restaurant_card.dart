@@ -10,89 +10,82 @@ class RestaurantCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: const EdgeInsets.only(bottom: 20),
-      elevation: 4,
+      margin: EdgeInsets.zero,
+      elevation: 3,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       shadowColor: Colors.black26,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Stack(
-            children: [
-              ClipRRect(
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-                child: Image.asset(
-                  restaurant.imageUrl,
-                  height: 180,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) => Container(
-                    height: 180,
-                    color: Colors.grey.shade300,
-                    child: const Center(child: FaIcon(FontAwesomeIcons.image, size: 40, color: Colors.grey)),
+          ClipRRect(
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+            child: Image.asset(
+              restaurant.imageUrl,
+              height: 130,
+              width: double.infinity,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) =>
+                  Container(height: 130, color: Colors.grey.shade300),
+            ),
+          ),
+
+          Flexible(
+            child: Padding(
+              padding: const EdgeInsets.all(10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    restaurant.name,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      color: Colors.indigo,
+                    ),
                   ),
-                ),
-              ),
-              Positioned(
-                top: 12,
-                right: 12,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                  decoration: BoxDecoration(
-                    // ignore: deprecated_member_use
-                    color: Colors.white.withOpacity(0.9),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
+                  const SizedBox(height: 4),
+
+                  Row(
                     children: [
-                      const FaIcon(FontAwesomeIcons.solidStar, size: 12, color: Colors.amber),
+                      FaIcon(FontAwesomeIcons.utensils, size: 12, color: Colors.grey.shade600),
                       const SizedBox(width: 4),
+                      Flexible(
+                        child: Text(
+                          restaurant.category,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(color: Colors.grey.shade700, fontSize: 12),
+                        ),
+                      ),
+                      const Spacer(),
+                      FaIcon(FontAwesomeIcons.solidStar, size: 12, color: Colors.amber),
+                      const SizedBox(width: 2),
                       Text(
                         restaurant.rating.toString(),
-                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
                       ),
                     ],
                   ),
-                ),
-              ),
-            ],
-          ),
-          // Info Section
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  restaurant.name,
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.indigo,
-                  ),
-                ),
-                const SizedBox(height: 6),
-                Row(
-                  children: [
-                    FaIcon(FontAwesomeIcons.utensils, size: 14, color: Colors.blueGrey.shade400),
-                    const SizedBox(width: 6),
-                    Text(
-                      restaurant.category,
-                      style: TextStyle(color: Colors.blueGrey.shade600),
-                    ),
-                    const Spacer(),
-                    FaIcon(FontAwesomeIcons.locationDot, size: 14, color: Colors.blueGrey.shade400),
-                    const SizedBox(width: 6),
-                    Flexible(
-                      child: Text(
-                        restaurant.location.split(',')[0], // Show city only
-                        style: TextStyle(color: Colors.blueGrey.shade600),
-                        overflow: TextOverflow.ellipsis,
+                  const SizedBox(height: 4),
+
+                  Row(
+                    children: [
+                      FaIcon(FontAwesomeIcons.locationDot, size: 12, color: Colors.grey.shade600),
+                      const SizedBox(width: 4),
+                      Flexible(
+                        child: Text(
+                          restaurant.location.split(',')[0],
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(color: Colors.grey.shade700, fontSize: 12),
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ],

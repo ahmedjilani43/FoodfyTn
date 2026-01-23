@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../core/routes.dart';
+import '../../services/session_service.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -13,27 +14,37 @@ class _ProfileScreenState extends State<ProfileScreen> {
   bool isNotificationsEnabled = true;
   bool isDarkModeEnabled = false;
 
-  // Pop Up
+  String? userEmail = 'Guest'; // <- dynamic user
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUser();
+  }
+
+  void _loadUser() async {
+    final email = await SessionService.getUserEmail();
+    if (!mounted) return;
+    setState(() {
+      userEmail = email ?? 'Guest';
+    });
+  }
+
   void _showNotificationDialog(bool value) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           backgroundColor: isDarkModeEnabled ? Colors.grey[850] : Colors.white,
           title: Row(
             children: [
-              Icon(
-                value ? Icons.notifications_active : Icons.notifications_off,
-                color: Colors.indigo,
-              ),
+              Icon(value ? Icons.notifications_active : Icons.notifications_off,
+                  color: Colors.indigo),
               const SizedBox(width: 10),
-              Text(
-                value ? "Enabled" : "Disabled",
-                style: TextStyle(
-                    color: isDarkModeEnabled ? Colors.white : Colors.black),
-              ),
+              Text(value ? "Enabled" : "Disabled",
+                  style: TextStyle(
+                      color: isDarkModeEnabled ? Colors.white : Colors.black)),
             ],
           ),
           content: Text(
@@ -56,6 +67,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
+  void _logout() async {
+    await SessionService.logout();
+    if (!mounted) return;
+    Navigator.pushReplacementNamed(context, '/login');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,6 +82,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
         backgroundColor: Colors.indigo,
         shadowColor: Colors.transparent,
         scrolledUnderElevation: 0,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: _logout,
+            tooltip: 'Logout',
+          ),
+        ],
       ),
       body: AnimatedContainer(
         duration: const Duration(milliseconds: 400),
@@ -78,7 +102,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 padding: const EdgeInsets.only(bottom: 30),
                 decoration: BoxDecoration(
                   color: Colors.indigo,
-                  borderRadius: BorderRadius.only(
+                  borderRadius: const BorderRadius.only(
                     bottomLeft: Radius.circular(50),
                     bottomRight: Radius.circular(50),
                   ),
@@ -92,12 +116,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         Container(
                           height: 100,
                           width: double.infinity,
-                          decoration: BoxDecoration(
-                            borderRadius: const BorderRadius.only(
-                              bottomLeft: Radius.circular(50),
-                              bottomRight: Radius.circular(50),
-                            ),
-                          ),
                         ),
                         Positioned(
                           top: 30,
@@ -132,7 +150,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                               const SizedBox(height: 10),
                               Text(
-                                "Hanine Hammami",
+                                userEmail ?? 'Guest', // <- dynamic user
                                 style: TextStyle(
                                   fontSize: 24,
                                   fontWeight: FontWeight.bold,
@@ -158,7 +176,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ),
               const SizedBox(height: 80),
-
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Card(

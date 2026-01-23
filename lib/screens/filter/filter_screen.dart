@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import '../../data/mock_data.dart';
 
 class FilterScreen extends StatefulWidget {
   const FilterScreen({super.key});
@@ -11,39 +12,29 @@ class FilterScreen extends StatefulWidget {
 class _FilterScreenState extends State<FilterScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  // Price range
-  RangeValues _priceRange = const RangeValues(20, 100);
-
-  // Categories
-  final List<String> _categories = ["Tunisian", "Pizza", "Seafood"];
+  RangeValues _ratingRange = const RangeValues(1.0, 5.0);
+  late List<String> _categories;
   final List<String> _selectedCategories = [];
-
-  // Sample list of restaurants
-  final List<Map<String, dynamic>> _restaurants = [
-    {"name": "El Medina", "price": 30, "category": "Tunisian"},
-    {"name": "Pizza House", "price": 50, "category": "Pizza"},
-    {"name": "Seafood Palace", "price": 90, "category": "Seafood"},
-    {"name": "Fast Pizza", "price": 25, "category": "Pizza"},
-    {"name": "Carthage Grill", "price": 70, "category": "Tunisian"},
-  ];
-
   List<Map<String, dynamic>> _filteredRestaurants = [];
 
-  void _applyFilters() {
-    if (_selectedCategories.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please select at least one category.")),
-      );
-      return;
-    }
+  @override
+  void initState() {
+    super.initState();
+    _categories = mockRestaurants
+        .map((res) => res['category'] as String)
+        .toSet()
+        .toList();
+    _filteredRestaurants = List.from(mockRestaurants);
+  }
 
+  void _applyFilters() {
     setState(() {
-      _filteredRestaurants = _restaurants.where((restaurant) {
-        final matchesCategory =
+      _filteredRestaurants = mockRestaurants.where((restaurant) {
+        final matchesCategory = _selectedCategories.isEmpty ||
             _selectedCategories.contains(restaurant['category']);
-        final matchesPrice = restaurant['price'] >= _priceRange.start &&
-            restaurant['price'] <= _priceRange.end;
-        return matchesCategory && matchesPrice;
+        final matchesRating = restaurant['rating'] >= _ratingRange.start &&
+            restaurant['rating'] <= _ratingRange.end;
+        return matchesCategory && matchesRating;
       }).toList();
     });
   }
@@ -68,21 +59,21 @@ class _FilterScreenState extends State<FilterScreen> {
               ),
               const SizedBox(height: 20),
               const Text(
-                "Select Price Range:",
+                "Select Rating Range:",
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               RangeSlider(
-                values: _priceRange,
-                min: 20,
-                max: 100,
-                divisions: 8,
+                values: _ratingRange,
+                min: 1.0,
+                max: 5.0,
+                divisions: 40,
                 labels: RangeLabels(
-                  "${_priceRange.start.toInt()} TND",
-                  "${_priceRange.end.toInt()} TND",
+                  _ratingRange.start.toStringAsFixed(1),
+                  _ratingRange.end.toStringAsFixed(1),
                 ),
                 onChanged: (RangeValues values) {
                   setState(() {
-                    _priceRange = values;
+                    _ratingRange = values;
                   });
                 },
               ),
@@ -122,18 +113,19 @@ class _FilterScreenState extends State<FilterScreen> {
                 child: _filteredRestaurants.isEmpty
                     ? const Center(child: Text("No restaurants found."))
                     : ListView.builder(
-                        itemCount: _filteredRestaurants.length,
-                        itemBuilder: (context, index) {
-                          final restaurant = _filteredRestaurants[index];
-                          return Card(
-                            child: ListTile(
-                              title: Text(restaurant['name']),
-                              subtitle: Text(
-                                  "${restaurant['category']} - ${restaurant['price']} TND"),
-                            ),
-                          );
-                        },
+                  itemCount: _filteredRestaurants.length,
+                  itemBuilder: (context, index) {
+                    final restaurant = _filteredRestaurants[index];
+                    return Card(
+                      child: ListTile(
+                        leading: Icon(Icons.restaurant, color: Colors.indigo),
+                        title: Text(restaurant['name']),
+                        subtitle: Text(
+                            "${restaurant['category']} - ⭐ ${restaurant['rating']}"),
                       ),
+                    );
+                  },
+                ),
               ),
             ],
           ),
